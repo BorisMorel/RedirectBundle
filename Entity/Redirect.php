@@ -4,11 +4,13 @@ namespace BOMO\RedirectBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="BOMO\RedirectBundle\Repository\RedirectRepository")
  * @ORM\Table(name="Redirect")
  * @ORM\HasLifecycleCallbacks
+ * @UniqueEntity("urlSource")
  */
 class Redirect
 {
@@ -21,9 +23,8 @@ class Redirect
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Type("string")
-     * @Assert\Url(message="redirect.url_source.invalid")
      * @Assert\Length(max=255)
      * @Assert\NotBlank(message="redirect.url_source.not_blank")
      */
@@ -32,7 +33,6 @@ class Redirect
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Type("string")
-     * @Assert\Url(message="redirect.url_target.invalid")
      * @Assert\Length(max=255)
      * @Assert\NotBlank(message="redirect.url_target.not_blank")
      */
@@ -40,15 +40,16 @@ class Redirect
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Type("string")
      * @Assert\Length(max=255)
      * @Assert\NotBlank(message="redirect.code.not_blank")
+     * @Assert\Choice(callback="getStatusList")
      */
     protected $code;
 
     /**
      * @ORM\Column(type="boolean")
      * @Assert\Type("bool")
+     * @Assert\NotNull()
      */
     protected $isActive;
 
@@ -152,5 +153,10 @@ class Redirect
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    public static function getStatusList()
+    {
+        return array_keys(\BOMO\RedirectBundle\Util\RedirectStatus::getRedirectStatus());
     }
 }
