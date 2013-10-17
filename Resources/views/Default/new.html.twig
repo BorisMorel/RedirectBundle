@@ -1,0 +1,9 @@
+{% set new = form.vars.data.id is defined and form.vars.data.id is not null ? false : true %}
+{% extends "BOMORedirectBundle::layout.html.twig" %}
+{% block redirect_body %}
+<form action="{{ new == true ? path('redirect_create') : path('redirect_edit', {'id' : app.request.attributes.id })}}" method="post" {{ app.debug ? 'novalidate="novalidate"' : '' }}>
+  {{ form_widget(form) }}
+  
+  <button type="submit">{{ 'redirect.new.apply'|trans }}</button>
+</form>
+{% endblock redirect_body %}
