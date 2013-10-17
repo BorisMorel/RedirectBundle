@@ -32,7 +32,7 @@ class RedirectSubscriber implements EventSubscriberInterface
                 ->getFromSource($event->getRequest()->getPathInfo())
                 ;
             
-            $reponse = new RedirectResponse($url->getUrlTarget(), $url->getCode());
+            $reponse = new RedirectResponse($event->getRequest()->getUriForPath($url->getUrlTarget()), $url->getCode());
                 
             $event->setResponse($reponse);
 
